@@ -249,6 +249,7 @@ function getDepartments() {
     return $data;
 }
 
+#get the current id && name from the categories table
 function getCategories() {
     $query = "select id, name from categories";
     $result = db_query($query);
@@ -257,6 +258,7 @@ function getCategories() {
     return $data;
 }
 
+#get the current id && names from item_condition table
 function getCondtions() {
     $query = "select id,name from item_condition;";
     $result = db_query($query);
@@ -265,6 +267,7 @@ function getCondtions() {
     return $data;
 }
 
+#get current users and ids from the department_users table
 function getUsers() {
     $query = "select id,username from department_users";
     $result = db_query($query);
