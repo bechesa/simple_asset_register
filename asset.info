@@ -1,0 +1,4 @@
+name = Asset
+description = a simple asset register
+version = VERSION
+core = 7.x

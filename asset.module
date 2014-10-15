@@ -1,0 +1,276 @@
+<?php
+
+function asset_menu() {
+    $items = array();
+    $items['register'] = array(
+        'title' => 'Register',
+        'page callback' => 'register_items',
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['register/departments'] = array(
+        'title' => 'Register Departments',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('register_departments'),
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['register/categories'] = array(
+        'title' => 'Register Categories',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('register_categories'),
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['register/users'] = array(
+        'title' => 'Register Users',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('register_users'),
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['register/conditions'] = array(
+        'title' => 'Register Condition',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('register_condition'),
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['register/assets'] = array(
+        'title' => 'Register assets',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('register_assets'),
+        'access callback' => True,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function register_items() {
+    return t("Register Items");
+}
+
+// we define department form
+function register_departments() {
+    $form['department_name'] = array('#title' => t("Department name :"),
+        '#type' => 'textfield',
+        '#description' => 'Enter department name');
+    $form['submit'] = array('#type' => 'submit',
+        '#value' => t("Save"));
+    return $form;
+}
+
+// we define category form
+function register_categories() {
+    $form['category_name'] = array('#title' => t("Category name :"),
+        '#type' => 'textfield',
+        '#description' => 'Enter category name');
+    $form['submit'] = array('#type' => 'submit',
+        '#value' => t("Save"));
+    return $form;
+}
+
+// we define user form
+function register_users() {
+
+    $form['user_name'] = array('#title' => t("User name :"),
+        '#type' => 'textfield',
+        '#description' => 'register users');
+    $form['submit'] = array('#type' => 'submit',
+        '#value' => t("Save"));
+    return $form;
+}
+
+//we define condition form
+function register_condition() {
+
+    $form['register_condition'] = array('#title' => t("Register Condition :"),
+        '#type' => 'textfield',
+        '#description' => 'register states of condition');
+    $form['submit'] = array('#type' => 'submit',
+        '#value' => t("Save"));
+    return $form;
+}
+
+// we define assets form
+function register_assets() {
+
+    $form['assetID'] = array('#title' => t("Asset ID"),
+        '#type' => 'textfield',
+        '#description' => 'asset id');
+
+    $form['model'] = array('#title' => t("Model"),
+        '#type' => 'textfield',
+        '#description' => 'model');
+
+    $form['description'] = array('#title' => t("Description"),
+        '#type' => 'textfield',
+        '#description' => 'description');
+
+    $form['serialno'] = array('#title' => t("Serial number"),
+        '#type' => 'textfield',
+        '#description' => 'serial number');
+
+    $form['department_id'] = array('#title' => t("Select Department"),
+        '#type' => 'select',
+        '#options' => getDepartments(),
+        '#required' => true,
+        '#description' => 'department name');
+
+    $form['purchaseOrderNo'] = array('#title' => t("Purchase order number"),
+        '#type' => 'textfield',
+        '#description' => 'serial number');
+
+    $form['category_id'] = array('#title' => t("Select Category"),
+        '#type' => 'select',
+        '#options' => getCategories(),
+        '#required' => true,
+        '#description' => 'category');
+
+    $form['item_condition_id'] = array('#title' => t("Select Condition"),
+        '#type' => 'select',
+        '#options' => getCondtions(),
+        '#required' => true,
+        '#description' => 'condition of item');
+
+
+    $form['user_id'] = array('#title' => t("Select Person responsible"),
+        '#type' => 'select',
+        '#options' => getUsers(),
+        '#required' => true,
+        '#description' => 'person responsible');
+
+
+    $form['log'] = array('#title' => t("Notes"),
+        '#type' => 'textarea',
+        '#description' => 'Notes');
+
+    $form['submit'] = array('#type' => 'submit',
+        '#value' => t("Save"));
+    return $form;
+}
+
+#########################################################################################
+// now we handle submissions to databases.
+
+function register_departments_submit($form, &$form_state) {
+    drupal_set_message(print_r($form_state['values'], true));
+
+    try {
+        $nid = db_insert('departments')
+                ->fields(array('department_name'))
+                ->values(array($form_state['values']['department_name']))
+                ->execute();
+    } catch (Exception $e) {
+        drupal_set_message($e->getMessage());
+    }
+}
+
+function register_categories_submit($form, &$form_state) {
+    drupal_set_message(print_r($form_state['values'], true));
+
+    try {
+        $nid = db_insert('categories')
+                ->fields(array('name'))
+                ->values(array($form_state['values']['category_name']))
+                ->execute();
+    } catch (Exception $e) {
+        drupal_set_message($e->getMessage());
+    }
+}
+
+function register_condition_submit($form, &$form_state) {
+    drupal_set_message(print_r($form_state['values'], true));
+
+    try {
+        $nid = db_insert('item_condition')
+                ->fields(array('name'))
+                ->values(array($form_state['values']['register_condition']))
+                ->execute();
+    } catch (Exception $e) {
+        drupal_set_message($e->getMessage());
+    }
+}
+
+function register_users_submit($form, &$form_state) {
+    drupal_set_message(print_r($form_state['values'], true));
+
+    try {
+        $nid = db_insert('department_users')
+                ->fields(array('username '))
+                ->values(array($form_state['values']['user_name']))
+                ->execute();
+    } catch (Exception $e) {
+        drupal_set_message($e->getMessage());
+    }
+}
+
+function register_assets_submit($form, &$form_state) {
+    drupal_set_message(print_r($form_state['values'], true));
+
+    /*     * *
+     * 
+     * Array ( [assetID] => C.A0070 [model] => Model [description] => Model description [serialno] => serial number [department_id] => 12 [purchaseOrderNo] => pon [category_id] => 11 [item_condition_id] => 2 [user_id] => 273 [log] => wrrtwt [submit] => Save [form_build_id] => form-uQTLj0T3YW4ZffF2JjHTiC3llVeG7G-ATEzsetwn9Pc [form_token] => AjOj-_JJcDwQAHmn0oZcbwsn0GTkot-cXPVPrSFWcGU [form_id] => register_assets [op] => Save ) 
+     * 
+     */
+
+
+    try {
+        $nid = db_insert('asset_data')
+                ->fields(array('assetID', 'model', 'description', 'serialno', 'department_id',
+                    'purchaseOrderNo', 'category_id', 'item_condition_id', 'user_id', 'log'))
+                ->values(array(empty($form_state['values']['assetID']) ? null : strtoupper($form_state['values']['assetID']),
+                    strtoupper($form_state['values']['model']),
+                    strtoupper($form_state['values']['description']),
+                    empty($form_state['values']['serialno']) ? null : strtoupper($form_state['values']['serialno']),
+                    $form_state['values']['department_id'], 
+                    empty($form_state['values']['purchaseOrderNo']) ? null : $form_state['values']['purchaseOrderNo'],
+                    $form_state['values']['category_id'],
+                    $form_state['values']['item_condition_id'],
+                    $form_state['values']['user_id'], $form_state['values']['log']
+                ))
+                ->execute();
+    } catch (Exception $e) {
+        drupal_set_message($e->getMessage());
+    }
+}
+
+####################################################################################################################
+// operations to get data from tables
+function getDepartments() {
+    $query = "select id,department_name from departments;";
+    $result = db_query($query);
+    $data = $result->fetchAllKeyed();
+
+
+
+    return $data;
+}
+
+function getCategories() {
+    $query = "select id, name from categories";
+    $result = db_query($query);
+    $data = $result->fetchAllKeyed();
+
+    return $data;
+}
+
+function getCondtions() {
+    $query = "select id,name from item_condition;";
+    $result = db_query($query);
+    $data = $result->fetchAllKeyed();
+
+    return $data;
+}
+
+function getUsers() {
+    $query = "select id,username from department_users";
+    $result = db_query($query);
+    $data = $result->fetchAllKeyed();
+
+    return $data;
+}
+
+###########################################################################################################
